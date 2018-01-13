@@ -1,11 +1,10 @@
-import fnmatch
-import os
-import shutil
+"""Moves Dropbox media files to the appropriate location"""
 
-# Variables
-pictureExt = '*.jpg'
-videoExt = '*.mov'
+import media_mover
 
-# Loop through files in Dropbox directory and grab pictures
+DROPBOX_FOLDER = 'c:/dev/test/src'
+PICTURE_FOLDER = 'c:/dev/test/dest/pics'
+VIDEO_FOLDER = 'c:/dev/test/dest/vids'
 
-# Move picture files to the Photos folder under the appropriate year folder
+media_mover.move_pictures(DROPBOX_FOLDER, PICTURE_FOLDER)
+media_mover.move_videos(DROPBOX_FOLDER, VIDEO_FOLDER)
