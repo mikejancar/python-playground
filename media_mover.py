@@ -15,10 +15,15 @@ def move_pictures(src_path, dest_path):
     src_file = os.path.join(src_path, media_file)
 
     if fnmatch.fnmatch(media_file, picture_ext):
-      year_taken = image_info.get_year_taken(src_file)
-      dest_dir = os.path.join(dest_path, year_taken)
+      try:
+        year_taken = image_info.get_year_taken(src_file)
+        dest_dir = os.path.join(dest_path, year_taken)
 
-      move_file(dest_dir, src_file, media_file)
+        move_file(dest_dir, src_file, media_file)
+      except KeyError:
+        print 'Could not determine the year %s was taken' % src_file
+      except TypeError:
+        print 'Encountered a non-standard file type for %s' % src_file
 
 def move_videos(src_path, dest_path):
   """Moves video files from a source to a destination"""
