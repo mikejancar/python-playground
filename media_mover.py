@@ -1,6 +1,7 @@
 """MediaMover"""
 
 import fnmatch
+import logging
 import os
 import shutil
 import datetime
@@ -9,7 +10,12 @@ import image_info
 def move_pictures(src_path, dest_path):
   """Moves image files from a source to a destination"""
 
+  logging.basicConfig(filename='/logs/move-pictures.log', level=logging.INFO,
+                      format='%(asctime)s %(message)s', filemode='w')
+  logging.info('Moving pictures...')
   picture_ext = '*.jpg'
+
+  pictures_moved = 0
 
   for media_file in os.listdir(src_path):
     src_file = os.path.join(src_path, media_file)
@@ -20,10 +26,14 @@ def move_pictures(src_path, dest_path):
         dest_dir = os.path.join(dest_path, year_taken)
 
         move_file(dest_dir, src_file, media_file)
+        pictures_moved += 1
       except KeyError:
-        print 'Could not determine the year %s was taken' % src_file
+        logging.error('Could not determine the year %s was taken', src_file)
       except TypeError:
-        print 'Encountered a non-standard file type for %s' % src_file
+        logging.error('Encountered a non-standard file type for %s', src_file)
+
+  logging.info('Moved %s pictures...', pictures_moved)
+  logging.info('------------------------')
 
 def move_videos(src_path, dest_path):
   """Moves video files from a source to a destination"""
