@@ -12,7 +12,7 @@ def get_year_taken(image_path):
   if 'EXIF DateTimeOriginal' in image_tags:
       date_taken = datetime.strptime(image_tags['EXIF DateTimeOriginal'].printable,
                                      '%Y:%m:%d %H:%M:%S')
-      return date_taken.year
+      return str(date_taken.year)
   else:
       full_file_name = os.path.basename(image_path)
       short_file_name = os.path.splitext(full_file_name)[0]
