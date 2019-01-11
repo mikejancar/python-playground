@@ -1,26 +1,25 @@
 """MediaMover"""
 
-import fnmatch
+import re
 import logging
 import os
 import shutil
-import datetime
 import image_info
 
 def move_pictures(src_path, dest_path):
   """Moves image files from a source to a destination"""
 
-  logging.basicConfig(filename='/logs/move-pictures.log', level=logging.INFO,
+  logging.basicConfig(filename='/logs/move-media.log', level=logging.INFO,
                       format='%(asctime)s %(message)s', filemode='w')
   logging.info('Moving pictures...')
-  picture_ext = '*.jpg'
 
+  picture_ext_pattern = '.*\.[j|p][p|n]g'
   pictures_moved = 0
 
   for media_file in os.listdir(src_path):
     src_file = os.path.join(src_path, media_file)
 
-    if fnmatch.fnmatch(media_file, picture_ext):
+    if re.match(picture_ext_pattern, media_file):
       try:
         year_taken = image_info.get_year_taken(src_file)
         dest_dir = os.path.join(dest_path, year_taken)
@@ -38,17 +37,21 @@ def move_pictures(src_path, dest_path):
 def move_videos(src_path, dest_path):
   """Moves video files from a source to a destination"""
 
-  video_ext = '*.mov'
+  video_ext_pattern = '.*\.[m|3|g][p|g|i|o][4|p|f|v]'
+  videos_moved = 0
 
   for media_file in os.listdir(src_path):
     src_file = os.path.join(src_path, media_file)
 
-    if fnmatch.fnmatch(media_file, video_ext):
-      raw_time_taken = os.path.getmtime(src_file)
-      year_taken = datetime.date.fromtimestamp(raw_time_taken).strftime('%Y')
+    if re.match(video_ext_pattern, media_file):
+      year_taken = image_info.get_year_taken(src_file)
       dest_dir = os.path.join(dest_path, year_taken)
 
       move_file(dest_dir, src_file, media_file)
+      videos_moved += 1
+
+  logging.info('Moved %s videos...', videos_moved)
+  logging.info('------------------------')
 
 def move_file(dest_dir, src_file, dest_file):
   """Moves a file"""
@@ -58,4 +61,4 @@ def move_file(dest_dir, src_file, dest_file):
 
   full_dest = os.path.join(dest_dir, dest_file)
   shutil.move(src_file, full_dest)
-  print 'Moved %s to %s' % (src_file, full_dest)
+  logging.info('Moved %s to %s', src_file, full_dest)
