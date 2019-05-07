@@ -14,24 +14,31 @@ def move_pictures(src_path, dest_path):
   logging.info('Moving pictures...')
 
   picture_ext_pattern = '.*\.[j|p][p|n]g'
+  duplicate_pattern = '.*-1\.[j|p][p|n]g'
   pictures_moved = 0
+  duplicates_found = 0
 
   for media_file in os.listdir(src_path):
     src_file = os.path.join(src_path, media_file)
 
     if re.match(picture_ext_pattern, media_file):
-      try:
-        year_taken = image_info.get_year_taken(src_file)
-        dest_dir = os.path.join(dest_path, year_taken)
+      if re.match(duplicate_pattern, media_file):
+        move_file('C:/temp', src_file, media_file)
+        duplicates_found += 1
+      else:
+        try:
+          year_taken = image_info.get_year_taken(src_file)
+          dest_dir = os.path.join(dest_path, year_taken)
 
-        move_file(dest_dir, src_file, media_file)
-        pictures_moved += 1
-      except KeyError:
-        logging.error('Could not determine the year %s was taken', src_file)
-      except TypeError:
-        logging.error('Encountered a non-standard file type for %s', src_file)
+          move_file(dest_dir, src_file, media_file)
+          pictures_moved += 1
+        except KeyError:
+          logging.error('Could not determine the year %s was taken', src_file)
+        except TypeError:
+          logging.error('Encountered a non-standard file type for %s', src_file)
 
   logging.info('Moved %s pictures...', pictures_moved)
+  logging.info('Found %s duplicates...', duplicates_found)
   logging.info('------------------------')
 
 def move_videos(src_path, dest_path):
