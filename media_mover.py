@@ -14,7 +14,7 @@ def move_pictures(src_path, dest_path):
   logging.info('Moving pictures...')
 
   picture_ext_pattern = '.*\.[j|p][p|n]g'
-  duplicate_pattern = '.*-1\.[j|p][p|n]g'
+  duplicate_pattern = '.*-[\d]\.[j|p][p|n]g'
   pictures_moved = 0
   duplicates_found = 0
 
