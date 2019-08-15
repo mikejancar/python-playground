@@ -51,11 +51,14 @@ def move_videos(src_path, dest_path):
     src_file = os.path.join(src_path, media_file)
 
     if re.match(video_ext_pattern, media_file):
-      year_taken = image_info.get_year_taken(src_file)
-      dest_dir = os.path.join(dest_path, year_taken)
+      try:
+        year_taken = image_info.get_year_taken(src_file)
+        dest_dir = os.path.join(dest_path, year_taken)
 
-      move_file(dest_dir, src_file, media_file)
-      videos_moved += 1
+        move_file(dest_dir, src_file, media_file)
+        videos_moved += 1
+      except ValueError:
+        logging.error('Encountered an invalid file name for %s', src_file)
 
   logging.info('Moved %s videos...', videos_moved)
   logging.info('------------------------')
